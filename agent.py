@@ -1,29 +1,55 @@
-import os
-import json
 from pathlib import Path
 
 
-def read_text_file(filename):
-    path = Path(filename)
+def find_preferences_file():
+    possible_names = [
+        "job_preferences.txt",
+        "job_preferences.tx"
+    ]
 
-    if not path.exists():
-        raise FileNotFoundError(f"Could not find {filename}")
+    # Search the whole repository
+    for name in possible_names:
+        matches = list(Path(".").rglob(name))
 
-    return path.read_text(encoding="utf-8")
+        if matches:
+            return matches[0]
+
+    return None
 
 
 def load_preferences():
-    return read_text_file("job_preferences.tx")
+    preferences_file = find_preferences_file()
+
+    if preferences_file is None:
+        print("\nERROR: Job preferences file was not found.")
+        print("\nFiles available in the repository:")
+
+        for file in Path(".").rglob("*"):
+            if file.is_file():
+                print(" -", file)
+
+        raise FileNotFoundError(
+            "Could not find job_preferences.txt anywhere in the repository."
+        )
+
+    print(f"\nPreferences file found: {preferences_file}")
+
+    return preferences_file.read_text(encoding="utf-8")
 
 
-def get_cv_file():
-    files = list(Path(".").glob("*"))
+def find_cv():
+    cv_extensions = [
+        ".pdf",
+        ".docx",
+        ".doc",
+        ".txt"
+    ]
 
-    cv_extensions = [".pdf", ".docx", ".doc", ".txt"]
-
-    for file in files:
-        if file.suffix.lower() in cv_extensions:
-            return file
+    for file in Path(".").rglob("*"):
+        if file.is_file() and file.suffix.lower() in cv_extensions:
+            # Don't accidentally treat the preferences file as the CV
+            if "job_preferences" not in file.name.lower():
+                return file
 
     return None
 
@@ -42,15 +68,15 @@ def main():
     print("-" * 60)
 
     # Find CV
-    cv_file = get_cv_file()
+    cv_file = find_cv()
 
     if cv_file:
-        print(f"\nCV found: {cv_file.name}")
+        print(f"\nCV found: {cv_file}")
     else:
         print("\nWARNING: CV file was not found.")
 
-    print("\nAgent setup is working.")
-    print("Next step: connect an AI model and job-search source.")
+    print("\nAgent setup is working!")
+    print("Next step: connect the AI model and job-search system.")
 
 
 if __name__ == "__main__":
