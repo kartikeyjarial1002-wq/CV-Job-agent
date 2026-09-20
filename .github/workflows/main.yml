@@ -13,10 +13,22 @@ jobs:
       - name: Get repository files
         uses: actions/checkout@v4
 
+      - name: Show repository files
+        run: |
+          echo "===== FILES IN REPOSITORY ====="
+          find . -type f
+          echo "===== CURRENT DIRECTORY ====="
+          pwd
+          echo "===== GIT STATUS ====="
+          git status
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Check Python
+        run: python --version
 
       - name: Run job search agent
         run: python agent.py
