@@ -1,5 +1,7 @@
 from pathlib import Path
 
+print("NEW AGENT VERSION RUNNING")
+
 
 def find_preferences_file():
     possible_names = [
