@@ -13,7 +13,7 @@ def read_text_file(filename):
 
 
 def load_preferences():
-    return read_text_file("job_preferences.txt")
+    return read_text_file("job_preferences.tx")
 
 
 def get_cv_file():
